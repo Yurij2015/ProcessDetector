@@ -9,15 +9,13 @@ using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 namespace ProcessDetector
 {
-    public partial class Form1 : Form
+    public partial class DetectorForm : Form
     {
-        public Form1()
+        public DetectorForm()
         {
             InitializeComponent();
-
             OnRefreshGrid(null, null);
             Timer ticker = new Timer();
             ticker.Interval = 250;
@@ -56,11 +54,9 @@ namespace ProcessDetector
 
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void DetectorForm_Load(object sender, EventArgs e)
         {
 
         }
-
-
     }
 }
