@@ -36,7 +36,8 @@ namespace ProcessDetector
         {
             if (textBox2.Text == key)
             {
-                DetectorForm detectorForm = new DetectorForm();
+                string username = textBox1.Text;
+                DetectorForm detectorForm = new DetectorForm(username);
                 detectorForm.Show();
             }
             else
