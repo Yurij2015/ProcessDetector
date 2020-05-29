@@ -39,14 +39,14 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(613, 450);
+            this.dataGridView1.Size = new System.Drawing.Size(704, 519);
             this.dataGridView1.TabIndex = 0;
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(649, 27);
+            this.textBox1.Location = new System.Drawing.Point(722, 12);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.Size = new System.Drawing.Size(147, 20);
             this.textBox1.TabIndex = 1;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
@@ -63,7 +63,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(891, 521);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.dataGridView1);

@@ -23,6 +23,7 @@ namespace ProcessDetector
         public MainForm()
         {
             InitializeComponent();
+            textBox2.PasswordChar = '•';
 
         }
 

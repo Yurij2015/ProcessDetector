@@ -28,7 +28,7 @@ namespace ProcessDetector
             //ticker.Interval = 250;
             //ticker.Tick += OnRefreshGrid;
             //ticker.Start();
-           
+
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -41,7 +41,10 @@ namespace ProcessDetector
             BindingSource source = new BindingSource();
             var table = new DataTable("Process List");
 
-            Process[] processes = Process.GetProcesses();
+
+
+            WqlObjectQuery wqlQuery = new WqlObjectQuery("SELECT * FROM Win32_Product");
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(wqlQuery);
 
             table.Columns.Add("Название процесса");
             table.Columns.Add("Идентификатор");
@@ -50,52 +53,82 @@ namespace ProcessDetector
 
 
 
-            for (int i = 0; i < processes.Length; ++i)
+            foreach (ManagementObject software in searcher.Get())
             {
+                //Console.WriteLine(software["Caption"]);
+                table.Rows.Add(new object[] { software["Caption"], " ", Environment.MachineName, uuu });
 
-                if ((processes[i].ProcessName != "svchost") && (processes[i].ProcessName != "conhost") && (processes[i].ProcessName != "lsass") && (processes[i].ProcessName != "explorer") && (processes[i].ProcessName != "sihost") && (processes[i].ProcessName != "system"))
+                string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\VSProjects\\SoftwareInventory\\SoftwareInventory\\SoftwareInventory\\App_Data\\si_db.mdf;Integrated Security=True;Connection timeout=90";
+                SqlConnection Connection;
+                Connection = new SqlConnection(connectionString);
+
+                try
                 {
-                    
-                    table.Rows.Add(new object[] { processes[i].ProcessName + ".exe", processes[i].Id, Environment.MachineName, uuu });
+                    Connection.Open();
+                    string query = "INSERT INTO UsersApp (processName, machineName, processId, userName) VALUES (@processName, @machineName, @processId, @userName)";
 
-                   string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\VSProjects\\SoftwareInventory\\SoftwareInventory\\SoftwareInventory\\App_Data\\si_db.mdf;Integrated Security=True;Connection timeout=60";
-                    SqlConnection Connection;
-                    Connection = new SqlConnection(connectionString);
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    command.Parameters.Add("@processName", software["Caption"]);
+                    command.Parameters.Add("@machineName", Environment.MachineName);
+                    command.Parameters.Add("@processId", "1");
+                    command.Parameters.Add("@userName", uuu);
 
-                    try
-                    {
-                        Connection.Open();
-                        string query = "INSERT INTO UsersApp (processName, machineName, processId, userName) VALUES (@processName, @machineName, @processId, @userName)";
+                    command.ExecuteNonQuery();
+                    Connection.Close();
 
-                        SqlCommand command = new SqlCommand(query, Connection);
-                        command.Parameters.Add("@processName", processes[i].ProcessName);
-                        command.Parameters.Add("@machineName", Environment.MachineName);
-                        command.Parameters.Add("@processId", processes[i].Id);
-                        command.Parameters.Add("@userName", uuu);
-
-                        command.ExecuteNonQuery();
-                        Connection.Close();
-
-                    }
-                    catch (SqlException ex)
-                    {
-                        label1.Text = "connect fail";
-                        MessageBox.Show(ex.Message);
-                    }
-
+                }
+                catch (SqlException ex)
+                {
+                    label1.Text = "connect fail";
+                    MessageBox.Show(ex.Message);
                 }
             }
 
+
+            //for (int i = 0; i < processes.Length; ++i)
+            //{
+
+            //    if ((processes[i].ProcessName != "svchost") && (processes[i].ProcessName != "conhost") && (processes[i].ProcessName != "lsass") && (processes[i].ProcessName != "explorer") && (processes[i].ProcessName != "sihost") && (processes[i].ProcessName != "system"))
+            //    {
+
+            //        table.Rows.Add(new object[] { processes[i].ProcessName + ".exe", processes[i].Id, Environment.MachineName, uuu });
+
+            //        string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\VSProjects\\SoftwareInventory\\SoftwareInventory\\SoftwareInventory\\App_Data\\si_db.mdf;Integrated Security=True;Connection timeout=60";
+            //        SqlConnection Connection;
+            //        Connection = new SqlConnection(connectionString);
+
+            //        try
+            //        {
+            //            Connection.Open();
+            //            string query = "INSERT INTO UsersApp (processName, machineName, processId, userName) VALUES (@processName, @machineName, @processId, @userName)";
+
+            //            SqlCommand command = new SqlCommand(query, Connection);
+            //            command.Parameters.Add("@processName", processes[i].ProcessName);
+            //            command.Parameters.Add("@machineName", Environment.MachineName);
+            //            command.Parameters.Add("@processId", processes[i].Id);
+            //            command.Parameters.Add("@userName", uuu);
+
+            //            command.ExecuteNonQuery();
+            //            Connection.Close();
+
+            //        }
+            //        catch (SqlException ex)
+            //        {
+            //            label1.Text = "connect fail";
+            //            MessageBox.Show(ex.Message);
+            //        }
+
+            //    }
+            //}
+
             table.AcceptChanges();
             source.DataSource = table;
-
             int scroll = dataGridView1.FirstDisplayedScrollingRowIndex;
             dataGridView1.DataSource = source;
 
-
-
             if (scroll != -1)
                 dataGridView1.FirstDisplayedScrollingRowIndex = scroll;
+            MessageBox.Show("Данные отправлены");
 
         }
 
@@ -104,7 +137,7 @@ namespace ProcessDetector
 
         }
 
- 
-        
+
+
     }
 }
